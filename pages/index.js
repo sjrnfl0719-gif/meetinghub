@@ -13,7 +13,7 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState(today())
   const [calYear, setCalYear] = useState(new Date().getFullYear())
   const [calMonth, setCalMonth] = useState(new Date().getMonth())
-  const [curUser, setCurUser] = useState({ id: 'demo', name: 'Jason Kim', team: 'Project Team', role: 'admin' })
+  const [curUser, setCurUser] = useState({ id: 'demo', name: 'Jihwan Kim', team: 'Project Team', role: 'admin' })
   const [sheet, setSheet] = useState(null)
   const [toast, setToast] = useState('')
   const [form, setForm] = useState({})
@@ -485,12 +485,16 @@ export default function Home() {
               <div style={{fontSize:12,color:'#64748b',marginBottom:16}}>Select branch, room, date and time</div>
               <div className="row">
                 <div style={{flex:1}}><label className="lbl">Branch</label>
-                  <select className="sel" value={form.branchId||curBranchId||''} onChange={e=>setForm(f=>({...f,branchId:e.target.value,roomId:rooms.find(r=>r.branch_id===e.target.value)?.id}))}>
+                  <select className="sel" value={form.branchId||curBranchId||''} onChange={e=>{
+                    const newBranchId=e.target.value
+                    const firstRoom=rooms.find(r=>r.branch_id===newBranchId)
+                    setForm(f=>({...f,branchId:newBranchId,roomId:firstRoom?.id||''}))
+                  }}>
                     {branches.map(b=><option key={b.id} value={b.id}>{b.emoji} {b.name}</option>)}
                   </select>
                 </div>
                 <div style={{flex:1}}><label className="lbl">Room</label>
-                  <select className="sel" value={form.roomId||''} onChange={e=>setForm(f=>({...f,roomId:e.target.value}))}>
+                  <select className="sel" value={form.roomId||rooms.find(r=>r.branch_id===(form.branchId||curBranchId))?.id||''} onChange={e=>setForm(f=>({...f,roomId:e.target.value}))}>
                     {rooms.filter(r=>r.branch_id===(form.branchId||curBranchId)).map(r=><option key={r.id} value={r.id}>{r.name}</option>)}
                   </select>
                 </div>
